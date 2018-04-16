@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import io from 'socket.io-client';
 import { revertButtonState } from './ducks/modules/button';
 
-const socket = io('http://localhost:8000');
+export const socket = io('http://localhost:8000');
 
 class App extends Component {
   constructor() {
@@ -12,18 +12,22 @@ class App extends Component {
   }
 
   componentDidMount() {
-      socket.on('change-all', () => {
-          this.props.revertButtonState();
+      socket.emit('get-state');
+      socket.on('change-all', (ms) => {
+          this.props.revertButtonState(ms);
+      });
+      socket.on('set-state', (ms) => {
+          this.props.revertButtonState(ms);
       });
   }
 
   handleClick() {
       this.props.revertButtonState();
-      socket.emit('change', true);
+      socket.emit('change', Date.now());
   }
 
   render() {
-    return (
+      return (
       <div className="App">
         <button type='button' onClick={this.handleClick} disabled={this.props.buttonState}>Ok</button>
       </div>

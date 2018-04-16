@@ -3,8 +3,8 @@ import {
     put,
 } from 'redux-saga/effects';
 import { delay } from 'redux-saga';
-
 import sagasManager from '../helpers/sagas-manager';
+
 
 const initialState = {
     payload: false,
@@ -18,8 +18,9 @@ export const setButtonState = (payload) => ({
     payload,
 });
 
-export const revertButtonState = () => ({
+export const revertButtonState = (ms) => ({
     type: REVERT_BUTTON_STATE,
+    ms,
 });
 
 const Button = (state = initialState, { type, payload }) => {
@@ -36,11 +37,10 @@ const Button = (state = initialState, { type, payload }) => {
 
 export default Button;
 
-
-export function* watchSetButton() {
+export function* watchSetButton({ ms = 0 }) {
     yield put(setButtonState(true));
 
-    yield delay(5000);
+    yield delay(5000 - ms);
 
     yield put(setButtonState(false));
 }
